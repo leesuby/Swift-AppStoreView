@@ -14,24 +14,24 @@ class ComingSoonCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-
-
-
-        avatar.layer.cornerRadius = 50
+        
+        
+        
+        avatar.layer.cornerRadius = 60
         avatar.contentMode = .scaleAspectFit
         avatar.clipsToBounds = true
         
         name.font = UIFont.preferredFont(forTextStyle: .headline)
         name.textAlignment = .center
         name.textColor = .label
-
+        
         let stackView = UIStackView(arrangedSubviews: [avatar,name])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 10
         contentView.addSubview(stackView)
-
-       
+        
+        
         
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -40,15 +40,15 @@ class ComingSoonCell: UICollectionViewCell {
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
         
-    
+        
         
     }
-
+    
     func configure() {
         name.text = "Genshin Impact"
         avatar.image = UIImage(named: "GenshinLogo")
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("Not happening")
     }

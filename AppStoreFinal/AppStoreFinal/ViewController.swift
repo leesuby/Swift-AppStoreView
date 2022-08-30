@@ -11,21 +11,26 @@ import UIKit
 class ViewController: UIViewController {
     
     var collectionView: UICollectionView!
+    var isIOSLargerThan13: Bool {
+        if #available(iOS 13.0, *){
+            return true
+        }
+        return false
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         var layout : Any
-        if #available(iOS 13.0, *){
+        if (isIOSLargerThan13){
             //Compositional Layout
             layout = CompositionalLayout.createCompositionalLayout()
         }else{
             //Flow Layout
             layout = UICollectionViewFlowLayout()
-        
+            
+            
         }
-
-
         
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout as! UICollectionViewLayout)
         
@@ -33,8 +38,18 @@ class ViewController: UIViewController {
         collectionView.backgroundColor = .systemBackground
         
         collectionView.register(SectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
-        collectionView.register(HotAppCell.self, forCellWithReuseIdentifier: "hotcell")
-        collectionView.register(ComingSoonCell.self, forCellWithReuseIdentifier: "comingsooncell")
+        
+        if (isIOSLargerThan13){
+            collectionView.register(HotAppCell.self, forCellWithReuseIdentifier: "hotcell")
+            collectionView.register(ComingSoonCell.self, forCellWithReuseIdentifier: "comingsooncell")
+            
+        }
+        else{
+            collectionView.register(ContainerHotAppCell.self, forCellWithReuseIdentifier: "hotcontainer")
+            collectionView.register(ContainerComingAppCell.self, forCellWithReuseIdentifier: "comingcontainer")
+            collectionView.contentInset = .init(top: 10, left: 20, bottom: 10, right: 10)
+        }
+        
         
         setView()
         setContraint()
@@ -61,24 +76,27 @@ class ViewController: UIViewController {
     
 }
 
+//UICollectionViewDelegateFlowLayout
 extension ViewController: UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.size.width, height: 350)
+        if(indexPath.section==0){
+            return CGSize(width: collectionView.frame.size.width, height: 370)}
+        else{
+            return CGSize(width: collectionView.frame.size.width, height: 270)}
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        if(section==0) {
-            return CGSize(width: 100, height:100)
-        } else{
-            return CGSize(width: 100, height:133)
-        }
+        return CGSize(width: collectionView.frame.size.width, height:80)
     }
+    
+    
 }
 
+//UICollectionViewDelegate vs UICollectionViewDataSource
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return isIOSLargerThan13 ? 10 : 1
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -88,16 +106,32 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         var appCell = UICollectionViewCell()
         
-        switch(indexPath.section){
-        case 0:
-            if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hotcell", for: indexPath) as? HotAppCell{
-                cell.configure()
-                appCell = cell
+        if (isIOSLargerThan13){
+            switch(indexPath.section){
+            case 0:
+                if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hotcell", for: indexPath) as? HotAppCell{
+                    cell.configure()
+                    appCell = cell
+                }
+            default:
+                if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "comingsooncell", for: indexPath) as? ComingSoonCell{
+                    cell.configure()
+                    appCell = cell
+                }
             }
-        default:
-            if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "comingsooncell", for: indexPath) as? ComingSoonCell{
-                cell.configure()
-                appCell = cell
+        }
+        
+        else{
+            switch(indexPath.section){
+            case 0:
+                if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hotcontainer", for: indexPath) as? ContainerHotAppCell{
+                    appCell = cell
+                }
+                
+            default:
+                if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "comingcontainer", for: indexPath) as? ContainerComingAppCell{
+                    appCell = cell
+                }
             }
         }
         

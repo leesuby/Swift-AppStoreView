@@ -8,8 +8,8 @@
 import Foundation
 import UIKit
 class HotAppCell: UICollectionViewCell {
-
-
+    
+    
     let tagline = UILabel()
     let name = UILabel()
     let subtitle = UILabel()
@@ -18,18 +18,18 @@ class HotAppCell: UICollectionViewCell {
     let buyButton = UIButton(type: .custom)
     
     
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         let separator = UIView(frame: .zero)
         separator.translatesAutoresizingMaskIntoConstraints = false
         separator.backgroundColor = .quaternaryLabel
-
+        
         tagline.font = UIFontMetrics.default.scaledFont(for: UIFont.systemFont(ofSize: 12, weight: .bold))
         tagline.textColor = .systemBlue
-
-
+        
+        
         imageView.layer.cornerRadius = 5
         
         imageView.contentMode = .scaleAspectFill
@@ -37,22 +37,22 @@ class HotAppCell: UICollectionViewCell {
         
         name.font = UIFont.preferredFont(forTextStyle: .headline)
         name.textColor = .label
-
+        
         subtitle.font = UIFont.preferredFont(forTextStyle: .subheadline)
         subtitle.textColor = .secondaryLabel
-
+        
         avatar.layer.cornerRadius = 30
         avatar.contentMode = .scaleAspectFit
-
+        
         
         buyButton.setImage(UIImage(systemName: "icloud.and.arrow.down"), for: .normal)
-
+        
         avatar.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         buyButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-
+        
         let innerStackView = UIStackView(arrangedSubviews: [name, subtitle])
         innerStackView.axis = .vertical
-
+        
         let outerStackView = UIStackView(arrangedSubviews: [avatar, innerStackView, buyButton])
         outerStackView.translatesAutoresizingMaskIntoConstraints = false
         outerStackView.axis = .horizontal
@@ -66,13 +66,13 @@ class HotAppCell: UICollectionViewCell {
         stackView.spacing = 15
         
         contentView.addSubview(stackView)
-    
+        
         contentView.layer.shadowColor = UIColor.black.cgColor
         contentView.layer.shadowOpacity = 0.3
         contentView.layer.shadowOffset = .zero
         contentView.layer.shadowRadius = 10
-
-       
+        
+        
         
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -81,10 +81,10 @@ class HotAppCell: UICollectionViewCell {
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
         
-    
+        
         
     }
-
+    
     func configure() {
         tagline.text = "NOW AVAILABLE"
         name.text = "Genshin Impact"
@@ -92,7 +92,7 @@ class HotAppCell: UICollectionViewCell {
         imageView.image = UIImage(named: "GenshinBanner")
         avatar.image = UIImage(named: "GenshinLogo")
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("Not happening")
     }
