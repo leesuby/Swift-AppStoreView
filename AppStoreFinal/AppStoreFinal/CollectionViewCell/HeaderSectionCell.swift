@@ -42,7 +42,7 @@ class SectionHeader: UICollectionReusableView {
         stackView.setCustomSpacing(10, after: separator)
     }
     
-    func config(title : String , subtitle : String = ""){
+    func config(title : String , subtitle : String = "Pre-order now, play later"){
         self.title.text = title
         self.subtitle.text = subtitle
     }

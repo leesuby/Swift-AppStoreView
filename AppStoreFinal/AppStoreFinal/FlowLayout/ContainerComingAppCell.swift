@@ -6,8 +6,16 @@
 //
 
 import UIKit
+protocol ContainerComingAppCellDelegate {
+    func showApp(app: App)
+}
 
 class ContainerComingAppCell: UICollectionViewCell {
+   
+    
+    var containerApp: [App]?
+    var viewController : ViewController?
+    var delegate : ContainerComingAppCellDelegate?
     
     let ComingAppCollectionView : UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -21,6 +29,7 @@ class ContainerComingAppCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+
         
         contentView.addSubview(ComingAppCollectionView)
         
@@ -38,6 +47,10 @@ class ContainerComingAppCell: UICollectionViewCell {
         
     }
     
+    func config(listApp : [App]){
+        self.containerApp = listApp
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("Error")
     }
@@ -46,23 +59,24 @@ class ContainerComingAppCell: UICollectionViewCell {
 
 extension ContainerComingAppCell: UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: frame.width/2, height: frame.height-80)
+        return CGSize(width: frame.width/2, height: frame.height - 40)
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: -40, left: 0, bottom: 0, right: 0)
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
 }
 
 extension ContainerComingAppCell: UICollectionViewDelegate, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return containerApp?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         var AppCell = UICollectionViewCell()
         
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "comingSoon", for: indexPath) as? ComingSoonCell{
-            cell.configure()
+            
+            cell.configure(app: containerApp![indexPath.item])
             
             AppCell = cell
         }
@@ -70,5 +84,12 @@ extension ContainerComingAppCell: UICollectionViewDelegate, UICollectionViewData
         return AppCell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let app = containerApp?[indexPath.item] {
+            if let del = delegate {
+                del.showApp(app: app)
+            }
+        }
+    }
     
 }

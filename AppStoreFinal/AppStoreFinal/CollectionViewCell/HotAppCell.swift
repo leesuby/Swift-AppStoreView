@@ -93,6 +93,13 @@ class HotAppCell: UICollectionViewCell {
         avatar.image = UIImage(named: "GenshinLogo")
     }
     
+    func configure(app : App){
+        name.text = app.Name
+        subtitle.text = app.Category
+        imageView.image = UIImage(named: app.ImageName!)
+        avatar.image = UIImage(named: app.ImageName!)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("Not happening")
     }

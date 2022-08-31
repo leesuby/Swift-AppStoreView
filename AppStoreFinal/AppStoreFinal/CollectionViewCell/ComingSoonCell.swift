@@ -49,6 +49,11 @@ class ComingSoonCell: UICollectionViewCell {
         avatar.image = UIImage(named: "GenshinLogo")
     }
     
+    func configure(app : App){
+        name.text = app.Name
+        avatar.image = UIImage(named: app.ImageName!)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("Not happening")
     }

@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 class ContainerHotAppCell: UICollectionViewCell{
     
+    var containerApp: [App]?
+    
     var HotAppCollectionView: UICollectionView = {
         
         let layout = UICollectionViewFlowLayout()
@@ -40,6 +42,10 @@ class ContainerHotAppCell: UICollectionViewCell{
         
     }
     
+    func config(listApp : [App]){
+        self.containerApp = listApp
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("Error")
     }
@@ -59,7 +65,7 @@ extension ContainerHotAppCell: UICollectionViewDelegateFlowLayout{
 
 extension ContainerHotAppCell: UICollectionViewDelegate, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return containerApp?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -72,4 +78,5 @@ extension ContainerHotAppCell: UICollectionViewDelegate, UICollectionViewDataSou
         }
         return tmpCell
     }
+    
 }

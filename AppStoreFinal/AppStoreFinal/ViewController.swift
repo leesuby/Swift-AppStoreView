@@ -8,11 +8,14 @@
 import UIKit
 
 
-class ViewController: UIViewController {
+class ViewController: UIViewController , ContainerComingAppCellDelegate{
     
     var collectionView: UICollectionView!
+    var featureApp: FeaturedApps?
+    var appCategories: [AppCategory]?
+    
     var isIOSLargerThan13: Bool {
-        if #available(iOS 13.0, *){
+        if #available(iOS 17.0, *){
             return true
         }
         return false
@@ -22,14 +25,19 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         var layout : Any
+        
+        AppCategory.fetchFeaturedApps { (featureApp) -> () in
+            self.featureApp = featureApp
+            self.appCategories = featureApp.categories
+            self.collectionView.reloadData()
+        }
+        
         if (isIOSLargerThan13){
             //Compositional Layout
             layout = CompositionalLayout.createCompositionalLayout()
         }else{
             //Flow Layout
             layout = UICollectionViewFlowLayout()
-            
-            
         }
         
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout as! UICollectionViewLayout)
@@ -71,7 +79,20 @@ class ViewController: UIViewController {
         collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive=true
     }
     
-    
+    func showApp(app: App){
+        print(app)
+        
+        let dialogMessage = UIAlertController(title: app.Name, message: "", preferredStyle: .alert)
+        
+        // Create OK button with action handler
+        let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+         })
+        
+        //Add OK button to a dialog message
+        dialogMessage.addAction(ok)
+        // Present Alert to
+        self.present(dialogMessage, animated: true, completion: nil)
+    }
     
     
 }
@@ -94,13 +115,14 @@ extension ViewController: UICollectionViewDelegateFlowLayout{
 
 //UICollectionViewDelegate vs UICollectionViewDataSource
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
+
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return isIOSLargerThan13 ? 10 : 1
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return appCategories?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -125,11 +147,18 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
             switch(indexPath.section){
             case 0:
                 if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "hotcontainer", for: indexPath) as? ContainerHotAppCell{
+                    
+                    cell.config(listApp: appCategories![indexPath.section].apps!)
+                    
                     appCell = cell
                 }
                 
             default:
                 if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "comingcontainer", for: indexPath) as? ContainerComingAppCell{
+                    
+                    cell.config(listApp: appCategories![indexPath.section].apps!)
+                    cell.delegate = self
+                    
                     appCell = cell
                 }
             }
@@ -143,12 +172,9 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header", for: indexPath) as! SectionHeader
-            if (indexPath.section == 0){
-                header.config(title: "Don't Miss These Event")
-            }
-            else{
-                header.config(title: "Coming Soon", subtitle: "Pre-order now, play later")
-            }
+            
+            header.config(title: appCategories![indexPath.section].name!)
+           
             return header
         default:
             return UICollectionReusableView()
@@ -156,3 +182,4 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
     }
     
 }
+
